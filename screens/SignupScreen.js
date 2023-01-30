@@ -13,6 +13,7 @@ import { AuthContext } from "../store/auth-context";
 import UiButton from "../ui/UiButton";
 import UiLink from "../ui/UiLink";
 import UiLoadingOverlay from "../ui/UiLoadingOverlay";
+import getErrorMessageByCode from "../utility/FirebaseUtility";
 
 function SignupScreen({ navigation }) {
   const [enteredEmail, setEnteredEmail] = useState("");
@@ -77,17 +78,12 @@ function SignupScreen({ navigation }) {
       const token = await createUser(email, password);
       authCtx.authenticate(token);
     } catch (err) {
-      console.log(err);
       Alert.alert(
         "Registration Unsuccessful.",
-        "Could not create user. Please check your credentials or try again later."
+        getErrorMessageByCode(err.response.data.error.message)
       );
     }
     setIsAuthenticating(false);
-  }
-
-  if (isAuthenticating) {
-    return <UiLoadingOverlay message="Registering user."></UiLoadingOverlay>;
   }
 
   return (
@@ -137,6 +133,7 @@ function SignupScreen({ navigation }) {
             isFullWidth={true}
             title="Register"
             onPress={submitHandler}
+            isLoading={isAuthenticating}
           ></UiButton>
         </View>
         <View style={styles.hrContainer}>

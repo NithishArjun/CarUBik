@@ -1,7 +1,14 @@
-import { View, Pressable, Text, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Pressable,
+  Text,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-function UiButton({ title, isFullWidth, onPress, className }) {
+function UiButton({ title, isFullWidth, onPress, className, isLoading }) {
   return (
     <View>
       <Pressable
@@ -36,8 +43,20 @@ function UiButton({ title, isFullWidth, onPress, className }) {
             >
               {title}
             </Text>
-            {isFullWidth && className == "primary" ? (
-              <Image source={require("../assets/images/right-arrow.png")} />
+            {isLoading ? (
+              <ActivityIndicator
+                color="#FFF"
+                size="small"
+                style={styles.image}
+              />
+            ) : (
+              ""
+            )}
+            {isFullWidth && className == "primary" && !isLoading ? (
+              <Image
+                source={require("../assets/images/right-arrow.png")}
+                style={styles.image}
+              />
             ) : (
               ""
             )}
@@ -76,7 +95,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 16,
     paddingHorizontal: 24,
   },
   flatButton: {
@@ -87,5 +106,9 @@ const styles = StyleSheet.create({
   },
   flatButtonText: {
     color: "#d02390",
+  },
+  image: {
+    height: 16,
+    width: 32,
   },
 });

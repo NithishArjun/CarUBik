@@ -5,6 +5,7 @@ import { AuthContext } from "../store/auth-context";
 import UiButton from "../ui/UiButton";
 import UiLink from "../ui/UiLink";
 import UiLoadingOverlay from "../ui/UiLoadingOverlay";
+import getErrorMessageByCode from "../utility/FirebaseUtility";
 
 function LoginScreen({ navigation }) {
   const [enteredEmail, setEnteredEmail] = useState("");
@@ -52,17 +53,12 @@ function LoginScreen({ navigation }) {
       const token = await authenticateUser(email, password);
       authCtx.authenticate(token);
     } catch (err) {
-      console.log(err);
       Alert.alert(
         "Login Unsuccessful.",
-        "Could not log you in. Please check your credentials or try again later."
+        getErrorMessageByCode(err.response.data.error.message)
       );
     }
     setIsAuthenticating(false);
-  }
-
-  if (isAuthenticating) {
-    return <UiLoadingOverlay message="Logging in"></UiLoadingOverlay>;
   }
 
   return (
@@ -101,6 +97,7 @@ function LoginScreen({ navigation }) {
             isFullWidth={true}
             title="Login"
             onPress={submitHandler}
+            isLoading={isAuthenticating}
           ></UiButton>
         </View>
         <View style={styles.hrContainer}>
