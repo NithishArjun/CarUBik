@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     color: "#d02390",
   },
   image: {
-    height: 16,
+    height: 24,
     width: 32,
   },
 });

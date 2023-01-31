@@ -75,8 +75,10 @@ function SignupScreen({ navigation }) {
     }
     setIsAuthenticating(true);
     try {
-      const token = await createUser(email, password);
-      authCtx.authenticate(token);
+      const response = await createUser(email, password);
+      authCtx.authenticate(response.idToken);
+      authCtx.setEmail(response.email);
+      navigation.replace("HomeScreen");
     } catch (err) {
       Alert.alert(
         "Registration Unsuccessful.",

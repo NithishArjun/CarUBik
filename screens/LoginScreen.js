@@ -50,8 +50,10 @@ function LoginScreen({ navigation }) {
 
     setIsAuthenticating(true);
     try {
-      const token = await authenticateUser(email, password);
-      authCtx.authenticate(token);
+      const response = await authenticateUser(email, password);
+      authCtx.authenticate(response.idToken);
+      authCtx.setEmail(response.email);
+      navigation.replace("HomeScreen");
     } catch (err) {
       Alert.alert(
         "Login Unsuccessful.",
