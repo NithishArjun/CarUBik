@@ -1,10 +1,18 @@
 import { Pressable, StyleSheet, View, Text } from "react-native";
 
-function UiLink({ title, onPress }) {
+function UiLink({ title, onPress, className }) {
   return (
     <Pressable onPress={onPress}>
       <View style={styles.linkView}>
-        <Text style={styles.linkText}>{title}</Text>
+        <Text
+          style={
+            className === "secondary"
+              ? styles.secondarylLinkText
+              : styles.linkText
+          }
+        >
+          {title}
+        </Text>
       </View>
     </Pressable>
   );
@@ -17,5 +25,11 @@ const styles = StyleSheet.create({
   linkText: {
     fontWeight: "bold",
     color: "purple",
+    fontSize: 16,
+  },
+  secondarylLinkText: {
+    fontWeight: "bold",
+    color: "#666",
+    fontSize: 16,
   },
 });

@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 10,
   },
   buttonPressed: {
     opacity: 0.5,
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   fullWidth: {
-    width: "100%",
+    flex: 1,
   },
   text: {
     color: "white",
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
     color: "#d02390",
   },
   image: {
-    height: 24,
+    height: 16,
     width: 32,
   },
 });

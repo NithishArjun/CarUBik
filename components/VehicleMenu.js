@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Pressable, View, Image } from "react-native";
 
 import { Menu, Divider } from "react-native-paper";
+import { VehiclesContext } from "../store/vehicles-context";
+import EditVehicleDetails from "./EditVehicleDetails";
 
-function VehicleMenu() {
+function VehicleMenu({ id, editHandler }) {
   const [visible, setVisible] = useState(false);
+
+  const vehiclesCtx = useContext(VehiclesContext);
 
   const openMenu = () => setVisible(true);
 
@@ -21,10 +25,22 @@ function VehicleMenu() {
           </Pressable>
         }
       >
-        <Menu.Item onPress={() => {}} title="Edit details" />
-        <Menu.Item onPress={() => {}} title="Book a service" />
+        <Menu.Item
+          onPress={() => {
+            editHandler();
+            setVisible(false);
+          }}
+          title="Edit Details"
+        />
+        <Menu.Item onPress={() => {}} title="Add Expense" />
         <Divider />
-        <Menu.Item onPress={() => {}} title="View all" />
+        <Menu.Item
+          onPress={() => {
+            vehiclesCtx.deleteVehicle(id);
+            setVisible(false);
+          }}
+          title="Delete Vehicle"
+        />
       </Menu>
     </View>
   );

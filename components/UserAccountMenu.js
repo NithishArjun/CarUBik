@@ -40,7 +40,7 @@ function UserAccountMenu() {
             <Divider />
             <Menu.Item
               onPress={() => {}}
-              title="My Account"
+              title="Sync Online"
               titleStyle={styles.normalMenuText}
             />
             <Divider />

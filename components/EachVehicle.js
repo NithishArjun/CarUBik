@@ -1,14 +1,26 @@
+import { useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
+import EditVehicleDetails from "./EditVehicleDetails";
 import VehicleMenu from "./VehicleMenu";
 
 function EachVehicle({ data }) {
+  const [editDetialsModalVisible, setEditDetailsModalVisible] = useState(false);
+
+  function showEditModal() {
+    setEditDetailsModalVisible(true);
+  }
+
+  function hideEditModal() {
+    setEditDetailsModalVisible(false);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Text style={styles.titleText}>
           {data.vehicleMake + " " + data.vehicleModel}
         </Text>
-        <VehicleMenu></VehicleMenu>
+        <VehicleMenu id={data.id} editHandler={showEditModal}></VehicleMenu>
       </View>
       <View style={styles.imageContainer}>
         <Image
@@ -148,6 +160,10 @@ function EachVehicle({ data }) {
           </View>
         </View>
       </View>
+      <EditVehicleDetails
+        isVisible={editDetialsModalVisible}
+        onCancel={hideEditModal}
+      ></EditVehicleDetails>
     </View>
   );
 }

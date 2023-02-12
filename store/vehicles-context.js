@@ -1,5 +1,7 @@
-import { createContext, useReducer } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 import { Vehicle } from "../modal/vehicle";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const VehiclesContext = createContext({
   vehicles: [],
@@ -13,7 +15,9 @@ function vehiclesReducer(state, action) {
     case "ADD":
       {
         const id = new Date().toString() + Math.random().toString();
-        return [...state, { ...action.payload, id: id }];
+        const newState = [...state, { ...action.payload, id: id }];
+        AsyncStorage.setItem("vehicles", JSON.stringify(newState));
+        return newState;
       }
       break;
     case "UPDATE": {
@@ -24,10 +28,18 @@ function vehiclesReducer(state, action) {
       const updatedItem = { ...updatableVehicle, ...action.payload.data };
       const updatedVehicle = [...state];
       updatedVehicle[index] = updatedItem;
+      AsyncStorage.setItem("vehicles", JSON.stringify(updatedVehicle));
       return updatedVehicle;
     }
     case "DELETE": {
-      return state.filter((vehicle) => vehicle.id !== action.payload.id);
+      const newState = state.filter(
+        (vehicle) => vehicle.id !== action.payload.id
+      );
+      AsyncStorage.setItem("vehicles", JSON.stringify(newState));
+      return newState;
+    }
+    case "INITIALIZE": {
+      return action.payload;
     }
     default:
       return state;
@@ -35,6 +47,16 @@ function vehiclesReducer(state, action) {
 }
 
 function VehiclesContextProvider({ children }) {
+  useEffect(() => {
+    async function fetchVehicles() {
+      const vehiclesData = await AsyncStorage.getItem("vehicles");
+      if (vehiclesData) {
+        dispatch({ type: "INITIALIZE", payload: JSON.parse(vehiclesData) });
+      }
+    }
+    fetchVehicles();
+  });
+
   const [vehiclesState, dispatch] = useReducer(vehiclesReducer, []);
 
   function addVehicle(vehicleData) {
@@ -42,7 +64,7 @@ function VehiclesContextProvider({ children }) {
   }
 
   function deleteVehicle(id) {
-    dispatch({ type: "DELETE", payload: id });
+    dispatch({ type: "DELETE", payload: { id: id } });
   }
 
   function updateVehicle(id, vehicleData) {
