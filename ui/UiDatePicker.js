@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -14,11 +14,18 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import UiLink from "./UiLink";
 
-function UiDatePicker({ label }) {
+function UiDatePicker({ label, controlKey, value, onConfirmHandler }) {
   const [date, setDate] = useState(new Date());
-
   const [selectedDate, setSelectedDate] = useState("");
   const [open, setOpen] = useState(false);
+
+  useEffect(()=>{
+    if(value){
+      const dt = new Date(value);
+      setDate(prevState=>dt);
+      setSelectedDateFormatter(dt);
+    }
+  },[])
 
   const onChange = (event, date) => {
     const timestamp = event.nativeEvent.timestamp;
@@ -26,7 +33,7 @@ function UiDatePicker({ label }) {
     setDate(dtInput);
   };
 
-  const setSelectedDateFormatter = () => {
+  const setSelectedDateFormatter = (dt) => {
     const monthArray = [
       "Jan",
       "Feb",
@@ -41,10 +48,10 @@ function UiDatePicker({ label }) {
       "Nov",
       "Dec",
     ];
-    const day = date.getDate();
-    const mnth = monthArray[date.getMonth()];
-    const year = date.getFullYear();
-    setSelectedDate(`${day}-${mnth}-${year}`);
+    const day = dt.getDate();
+    const mnth = monthArray[dt.getMonth()];
+    const year = dt.getFullYear();
+    setSelectedDate(prevState=>`${day}-${mnth}-${year}`);
   };
 
   return (
@@ -76,7 +83,8 @@ function UiDatePicker({ label }) {
               <UiLink
                 title="Confirm"
                 onPress={() => {
-                  setSelectedDateFormatter();
+                  setSelectedDateFormatter(date);
+                  onConfirmHandler(controlKey,date);
                   setOpen(false);
                 }}
               ></UiLink>

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { VehiclesContext } from "../store/vehicles-context";
 import EachVehicle from "./EachVehicle";
@@ -6,7 +6,11 @@ import EachVehicle from "./EachVehicle";
 function VehicleList() {
   const vehicleCtx = useContext(VehiclesContext);
 
-  const vehicles = vehicleCtx.vehicles;
+  const [vehicles, setVehicles]=useState();
+
+  useEffect(()=>{
+    setVehicles(prevState=>vehicleCtx.vehicles);
+  },[vehicleCtx]);
 
   return (
     <View>

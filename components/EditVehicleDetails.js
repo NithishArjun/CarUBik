@@ -2,8 +2,30 @@ import { Modal, ScrollView, StyleSheet, View, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import UiButton from "../ui/UiButton";
 import UiDatePicker from "../ui/UiDatePicker";
+import { useContext, useState } from "react";
+import { VehiclesContext } from "../store/vehicles-context";
 
-function EditVehicleDetails({ isVisible, onCancel }) {
+function EditVehicleDetails({ isVisible, vehicleData, onCancel, onSave }) {
+
+  const vehicleCtx = useContext(VehiclesContext);
+  const [vehicleState, setVehicleState] = useState({...vehicleData});
+
+  function datepickerChangeHandler(objectKey,dt){
+    const updatedItem = {[objectKey]:dt};
+    setVehicleState(prevState=>({...prevState,vehicleDetails:{...prevState.vehicleDetails,...updatedItem}}));
+  }
+
+  function saveVehicleDetails(){
+    vehicleCtx.updateVehicle(vehicleState.id,vehicleState);
+    onSave(vehicleState);
+    closeModal();
+  }
+
+  function closeModal(){
+    setVehicleState({...vehicleData});
+    onCancel();
+  }
+
   return (
     <Modal animationType="slide" visible={isVisible} transparent={true}>
       <ScrollView style={styles.container}>
@@ -14,24 +36,25 @@ function EditVehicleDetails({ isVisible, onCancel }) {
           style={styles.topBar}
         ></LinearGradient>
         <View style={styles.formContainer}>
-          <UiDatePicker label="Insurance Expiry Date:"></UiDatePicker>
-          <UiDatePicker label="Warranty Till:"></UiDatePicker>
-          <UiDatePicker label="RSA Expires On:"></UiDatePicker>
-          <UiDatePicker label="PUC Expires On:"></UiDatePicker>
-          <UiDatePicker label="Last Service Done On:"></UiDatePicker>
+          <UiDatePicker value={vehicleState.vehicleDetails['insuranceExpiryDate']} controlKey="insuranceExpiryDate" onConfirmHandler={datepickerChangeHandler} label="Insurance Expiry Date:"></UiDatePicker>
+          <UiDatePicker value={vehicleState.vehicleDetails['rsaExpiryDate']}  controlKey="rsaExpiryDate" onConfirmHandler={datepickerChangeHandler} label="RSA Expires On:"></UiDatePicker>
+          <UiDatePicker value={vehicleState.vehicleDetails['pucExpiryDate']}  controlKey="pucExpiryDate" onConfirmHandler={datepickerChangeHandler} label="Warranty Till:"></UiDatePicker>
+          <UiDatePicker value={vehicleState.vehicleDetails['warrantyExpiryDate']}  controlKey="warrantyExpiryDate" onConfirmHandler={datepickerChangeHandler} label="PUC Expires On:"></UiDatePicker>
+          <UiDatePicker value={vehicleState.vehicleDetails['lastServiceDate']}  controlKey="lastServiceDate" onConfirmHandler={datepickerChangeHandler} label="Last Service Done On:"></UiDatePicker>
           <View style={styles.buttonContainer}>
             <View style={styles.primaryBtnView}>
               <UiButton
                 title="Save"
                 isFullWidth={true}
                 className="primary"
+                onPress={saveVehicleDetails}
               ></UiButton>
             </View>
             <View style={styles.secondaryBtnView}>
               <UiButton
                 title="Cancel"
                 isFullWidth={true}
-                onPress={onCancel}
+                onPress={closeModal}
                 className="secondary"
               ></UiButton>
             </View>

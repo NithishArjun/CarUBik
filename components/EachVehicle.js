@@ -5,6 +5,11 @@ import VehicleMenu from "./VehicleMenu";
 
 function EachVehicle({ data }) {
   const [editDetialsModalVisible, setEditDetailsModalVisible] = useState(false);
+  const [vehicleDetails,setVehicleDetails] = useState(data);
+
+  function onEditVehicleSave(vehDetails){
+    setVehicleDetails(vehDetails);
+  }
 
   function showEditModal() {
     setEditDetailsModalVisible(true);
@@ -162,7 +167,9 @@ function EachVehicle({ data }) {
       </View>
       <EditVehicleDetails
         isVisible={editDetialsModalVisible}
+        vehicleData={vehicleDetails}
         onCancel={hideEditModal}
+        onSave = {onEditVehicleSave}
       ></EditVehicleDetails>
     </View>
   );
