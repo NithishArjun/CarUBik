@@ -2,7 +2,7 @@ import { Modal, ScrollView, StyleSheet, View, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import UiButton from "../ui/UiButton";
 import UiDatePicker from "../ui/UiDatePicker";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { VehiclesContext } from "../store/vehicles-context";
 
 function EditVehicleDetails({ isVisible, vehicleData, onCancel, onSave }) {
@@ -18,7 +18,7 @@ function EditVehicleDetails({ isVisible, vehicleData, onCancel, onSave }) {
   function saveVehicleDetails(){
     vehicleCtx.updateVehicle(vehicleState.id,vehicleState);
     onSave(vehicleState);
-    closeModal();
+    onCancel();
   }
 
   function closeModal(){

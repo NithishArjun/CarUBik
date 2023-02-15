@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
+import { Button } from "react-native-paper";
+import { formatDate } from "../utility/CommonFunctions";
 import EditVehicleDetails from "./EditVehicleDetails";
+import ExpiryInfo from "./ExpiryInfo";
 import VehicleMenu from "./VehicleMenu";
 
 function EachVehicle({ data }) {
   const [editDetialsModalVisible, setEditDetailsModalVisible] = useState(false);
   const [vehicleDetails,setVehicleDetails] = useState(data);
+
+  useEffect(()=>{
+    setVehicleDetails(prevState=>data);
+  },[data,vehicleDetails])
 
   function onEditVehicleSave(vehDetails){
     setVehicleDetails(vehDetails);
@@ -32,8 +39,22 @@ function EachVehicle({ data }) {
           style={styles.image}
           source={require("../assets/images/HondaCity.png")}
         ></Image>
+        
       </View>
+      <View style={styles.buttonContainer}>
+          <View>
+          <Button icon="pencil" mode="contained-tonal" onPress={() => showEditModal()}>
+            Edit Details
+          </Button>
+          </View>
+          <View>
+          <Button icon="history" mode="outlined"  onPress={() => {}}>
+            Add Expense
+          </Button>
+          </View>
+        </View>
       <View style={styles.topDetailTextContainer}>
+        
         <View style={styles.detailRow}>
           <View style={styles.detailRowEach}>
             <Text style={styles.label}>Make:</Text>
@@ -64,23 +85,11 @@ function EachVehicle({ data }) {
                 ></Image>
               </View>
               <View style={styles.detailImageRowEachTextConainer}>
-                <Text style={styles.label}>Insurance due on:</Text>
-                <Text style={styles.value}>25-04-2023</Text>
+                <Text style={styles.label}>Insurance:</Text>
+                <Text style={styles.value}>{formatDate(data.vehicleDetails.insuranceExpiryDate)}</Text>
               </View>
             </View>
-            <View style={styles.detailImageRowEachFooterContainer}>
-              <View style={[styles.detailImageRowEachFooter, styles.green]}>
-                <Image
-                  source={require("../assets/images/tick.png")}
-                  style={styles.detailImageRowEachFooterIcon}
-                ></Image>
-                <Text
-                  style={[styles.detailImageRowEachFooterText, styles.green]}
-                >
-                  Expires in 3 months
-                </Text>
-              </View>
-            </View>
+            <ExpiryInfo date={data.vehicleDetails.insuranceExpiryDate}></ExpiryInfo>
           </View>
           <View style={styles.detailImageRowEach}>
             <View style={styles.detailImageRowEachData}>
@@ -91,23 +100,11 @@ function EachVehicle({ data }) {
                 ></Image>
               </View>
               <View style={styles.detailImageRowEachTextConainer}>
-                <Text style={styles.label}>PUC due on:</Text>
-                <Text style={styles.value}>17-08-2023</Text>
+                <Text style={styles.label}>PUC:</Text>
+                <Text style={styles.value}>{formatDate(data.vehicleDetails.pucExpiryDate)}</Text>
               </View>
             </View>
-            <View style={styles.detailImageRowEachFooterContainer}>
-              <View style={[styles.detailImageRowEachFooter, styles.amber]}>
-                <Image
-                  source={require("../assets/images/warning.png")}
-                  style={styles.detailImageRowEachFooterIcon}
-                ></Image>
-                <Text
-                  style={[styles.detailImageRowEachFooterText, styles.amber]}
-                >
-                  Expires in 2 months
-                </Text>
-              </View>
-            </View>
+            <ExpiryInfo date={data.vehicleDetails.pucExpiryDate} />
           </View>
         </View>
         <View style={styles.detailRow}>
@@ -120,23 +117,11 @@ function EachVehicle({ data }) {
                 ></Image>
               </View>
               <View style={styles.detailImageRowEachTextConainer}>
-                <Text style={styles.label}>Last service date:</Text>
-                <Text style={styles.value}>25-08-2022</Text>
+                <Text style={styles.label}>Warranty:</Text>
+                <Text style={styles.value}>{formatDate(data.vehicleDetails.warrantyExpiryDate)}</Text>
               </View>
             </View>
-            <View style={styles.detailImageRowEachFooterContainer}>
-              <View style={[styles.detailImageRowEachFooter, styles.amber]}>
-                <Image
-                  source={require("../assets/images/warning.png")}
-                  style={styles.detailImageRowEachFooterIcon}
-                ></Image>
-                <Text
-                  style={[styles.detailImageRowEachFooterText, styles.amber]}
-                >
-                  4 months since last service
-                </Text>
-              </View>
-            </View>
+            <ExpiryInfo date={data.vehicleDetails.warrantyExpiryDate} />
           </View>
           <View style={styles.detailImageRowEach}>
             <View style={styles.detailImageRowEachData}>
@@ -148,26 +133,16 @@ function EachVehicle({ data }) {
               </View>
               <View style={styles.detailImageRowEachTextConainer}>
                 <Text style={styles.label}>RSA:</Text>
-                <Text style={styles.value}>NA</Text>
+                <Text style={styles.value}>{formatDate(data.vehicleDetails.rsaExpiryDate)}</Text>
               </View>
             </View>
-            <View style={styles.detailImageRowEachFooterContainer}>
-              <View style={[styles.detailImageRowEachFooter, styles.red]}>
-                <Image
-                  source={require("../assets/images/error.png")}
-                  style={styles.detailImageRowEachFooterIcon}
-                ></Image>
-                <Text style={[styles.detailImageRowEachFooterText, styles.red]}>
-                  Expired
-                </Text>
-              </View>
-            </View>
+            <ExpiryInfo date={data.vehicleDetails.rsaExpiryDate} />
           </View>
         </View>
       </View>
       <EditVehicleDetails
         isVisible={editDetialsModalVisible}
-        vehicleData={vehicleDetails}
+        vehicleData={data}
         onCancel={hideEditModal}
         onSave = {onEditVehicleSave}
       ></EditVehicleDetails>
@@ -226,13 +201,13 @@ const styles = StyleSheet.create({
     borderColor: "#eeeeee",
   },
   label: {
-    color: "#888",
+    color: "#777777",
     fontSize: 12,
   },
   value: {
     marginTop: 4,
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   detailImageRowEach: {
     flex: 1,
@@ -246,42 +221,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  detailImageRowEachFooterContainer: {
-    marginTop: 8,
-    alignItems: "flex-start",
-  },
-  detailImageRowEachFooter: {
-    flexDirection: "row",
-    paddingLeft: 4,
-    paddingRight: 8,
-    paddingVertical: 2,
-    borderWidth: 1,
-    borderRadius: 10,
-    alignItems: "center",
-    opacity: 0.8,
-  },
-  detailImageRowEachFooterIcon: {
-    width: 14,
-    height: 14,
-    resizeMode: "contain",
-  },
-  detailImageRowEachFooterText: {
-    fontSize: 9,
-    marginLeft: 4,
-    fontWeight: "bold",
-  },
-  green: {
-    color: "green",
-    borderColor: "green",
-  },
-  amber: {
-    color: "orange",
-    borderColor: "orange",
-  },
-  red: {
-    color: "red",
-    borderColor: "red",
-  },
+  
   detailImageIconContainer: {
     backgroundColor: "#ffc0cb",
     borderRadius: 22,
@@ -297,4 +237,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     justifyContent: "space-between",
   },
+  buttonContainer:{
+    flexDirection:"row",
+    marginBottom:12,
+    justifyContent:"space-evenly",
+    width:'100%',
+  }
 });
